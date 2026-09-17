@@ -1,0 +1,11 @@
+*.exe
+*.dll
+*.so
+bin/
+
+.env
+
+.vscode/
+.idea/
+
+postgres-data/
