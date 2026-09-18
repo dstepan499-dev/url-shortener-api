@@ -1,16 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 
+	"github.com/dstepan499-dev/url-shortener-api/internal/handler"
 	"github.com/dstepan499-dev/url-shortener-api/internal/repository"
+	"github.com/dstepan499-dev/url-shortener-api/internal/service"
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Warning: .env file not found")
+	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
 
 	dbURL := os.Getenv("DATABASE_URL")
@@ -33,5 +42,17 @@ func main() {
 		log.Fatalf("Failed to apply migration: %v", err)
 	}
 
-	log.Println("Successfully connected to PostgreSQL and initialized schema")
+	shortenerService := service.NewShortenerService(repo)
+	baseURL := fmt.Sprintf("http://localhost:%s", port)
+	h := handler.NewHandler(shortenerService, baseURL)
+
+	server := &http.Server{
+		Addr:    ":" + port,
+		Handler: h.InitRoutes(),
+	}
+
+	log.Printf("Server is running on port %s...", port)
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
