@@ -15,7 +15,7 @@ var (
 	ErrAliasExists = errors.New("alias already exists")
 )
 
-type URlRecord struct {
+type URLRecord struct {
 	ID          int64     `json:"id"`
 	Alias       string    `json:"alias"`
 	OriginalURL string    `json:"original_url"`
@@ -82,14 +82,14 @@ func (r *Repository) GetAndIncrement(ctx context.Context, alias string) (string,
 	return originalURL, nil
 }
 
-func (r *Repository) GetAnalytics(ctx context.Context, alias string) (*URlRecord, error) {
+func (r *Repository) GetAnalytics(ctx context.Context, alias string) (*URLRecord, error) {
 	query := `
 	SELECT id, alias, original_url, clicks, created_at
 	FROM urls
 	WHERE alias = $1
 	`
 
-	var record URlRecord
+	var record URLRecord
 	err := r.db.QueryRowContext(ctx, query, alias).Scan(
 		&record.ID,
 		&record.Alias,

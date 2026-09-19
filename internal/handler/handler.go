@@ -52,7 +52,7 @@ func (h *Handler) Shorten(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	alias, err := h.service.ShortenURl(r.Context(), req.URL, req.CustomAlias)
+	alias, err := h.service.ShortenURL(r.Context(), req.URL, req.CustomAlias)
 	if err != nil {
 		if errors.Is(err, service.ErrInvalidURL) || errors.Is(err, service.ErrEmptyURL) {
 			h.respondWithError(w, http.StatusBadRequest, err.Error())

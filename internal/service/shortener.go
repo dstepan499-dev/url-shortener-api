@@ -32,7 +32,7 @@ func NewShortenerService(repo *repository.Repository) *ShortenerService {
 	return &ShortenerService{repo: repo}
 }
 
-func (s *ShortenerService) ShortenURl(ctx context.Context, originalURL, customAlias string) (string, error) {
+func (s *ShortenerService) ShortenURL(ctx context.Context, originalURL, customAlias string) (string, error) {
 	originalURL = strings.TrimSpace(originalURL)
 	if originalURL == "" {
 		return "", ErrEmptyURL
@@ -62,7 +62,7 @@ func (s *ShortenerService) ResolveURL(ctx context.Context, alias string) (string
 	return s.repo.GetAndIncrement(ctx, alias)
 }
 
-func (s *ShortenerService) GetAnalytics(ctx context.Context, alias string) (*repository.URlRecord, error) {
+func (s *ShortenerService) GetAnalytics(ctx context.Context, alias string) (*repository.URLRecord, error) {
 	return s.repo.GetAnalytics(ctx, alias)
 }
 
